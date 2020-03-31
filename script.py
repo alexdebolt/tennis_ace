@@ -6,9 +6,9 @@ from sklearn.linear_model import LinearRegression
 # load and investigate the data here:
 df = pd.read_csv('./tennis_stats.csv')
 # print(df.head())
-# print(df.columns)
+columns = df.columns
 # print(df.describe())
-
+# print(columns)
 
 
 # # perform exploratory analysis here:
@@ -52,34 +52,57 @@ def single_feature_regression(feature, result):
     predict_results = model.predict(category_test)
 
     plt.scatter(results_test, predict_results, alpha = 0.4)
+    plt.title('Predicted Results vs. Actual Results')
+    plt.xlabel('Actual ' + result)
+    plt.ylabel('Predicted ' + result)
     plt.show()
     plt.clf()
 
 #Calling function with string of data column
-single_feature_regression('BreakPointsOpportunities', 'Winnings')
+# single_feature_regression('BreakPointsOpportunities', 'Winnings')
 
 
 ## perform two feature linear regressions here:
+# Creating a function to handle two feature lin regression
+def two_feature_regression(feature1, feature2, result):
+    categories = df[[feature1, feature2]]
+    results = df[[result]]
+
+    category_train, category_test, results_train, results_test = train_test_split(categories, results, train_size=0.8)
+
+    model = LinearRegression()
+    model.fit(category_train, results_train)
+
+    print('Predicted ' + result + ' with two features test score: ', model.score(category_test, results_test))
+
+    predict_results = model.predict(category_test)
+
+    plt.scatter(results_test, predict_results, alpha = 0.4)
+    plt.title('Predicted Results vs. Actual Results')
+    plt.xlabel('Actual ' + result)
+    plt.ylabel('Predicted ' + result)
+    plt.show()
+    plt.clf()
+
+# two_feature_regression('BreakPointsOpportunities', 'FirstServeReturnPointsWon', 'Winnings')
 
 
 
+## Performing multiple feature linear regressions to predict winnings
+categories = df[['FirstServe','FirstServePointsWon','FirstServeReturnPointsWon','SecondServePointsWon','SecondServeReturnPointsWon','Aces','BreakPointsConverted','BreakPointsFaced','BreakPointsOpportunities','BreakPointsSaved','DoubleFaults','ReturnGamesPlayed','ReturnGamesWon','ReturnPointsWon','ServiceGamesPlayed','ServiceGamesWon','TotalPointsWon','TotalServicePointsWon']]
+results = df[['Winnings']]
+category_train, category_test, results_train, results_test = train_test_split(categories, results, train_size=0.8)
+model = LinearRegression()
+model.fit(category_train, results_train)
+print('Predicted Winnings with two features test score: ', model.score(category_test, results_test))
+predict_results = model.predict(category_test)
+plt.scatter(results_test, predict_results, alpha = 0.4)
+plt.title('Predicted Results vs. Actual Results')
+plt.xlabel('Actual Winnings')
+plt.ylabel('Predicted Winnings')
+plt.show()
+plt.clf()
+
+# I attempted to create a function for this as well but ran into a string conversion to float issue when inputting a list of all features in
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## perform multiple feature linear regressions here:
